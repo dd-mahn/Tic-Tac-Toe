@@ -105,30 +105,27 @@ function GameController(
         //     [[0,0],[1,1],[2,2]],
         //     [[0,2],[1,1],[2,0]],
         // ]
-        let status = ''
         if(
-            board.getBoard()[0][0].getValue() === board.getBoard()[0][1].getValue() === board.getBoard()[0][2].getValue()
+            board.getBoard()[0][0].getValue() === board.getBoard()[0][1].getValue() === board.getBoard()[0][2].getValue() !== ''
             ||
-            board.getBoard()[1][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[1][2].getValue()
+            board.getBoard()[1][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[1][2].getValue() !== ''
             ||
-            board.getBoard()[2][0].getValue() === board.getBoard()[2][1].getValue() === board.getBoard()[2][2].getValue()
+            board.getBoard()[2][0].getValue() === board.getBoard()[2][1].getValue() === board.getBoard()[2][2].getValue() !== ''
             ||
-            board.getBoard()[0][0].getValue() === board.getBoard()[1][0].getValue() === board.getBoard()[2][0].getValue()
+            board.getBoard()[0][0].getValue() === board.getBoard()[1][0].getValue() === board.getBoard()[2][0].getValue() !== ''
             ||
-            board.getBoard()[0][1].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][1].getValue()
+            board.getBoard()[0][1].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][1].getValue() !== ''
             ||
-            board.getBoard()[0][2].getValue() === board.getBoard()[1][2].getValue() === board.getBoard()[2][2].getValue()
+            board.getBoard()[0][2].getValue() === board.getBoard()[1][2].getValue() === board.getBoard()[2][2].getValue() !== ''
             ||
-            board.getBoard()[0][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][2].getValue()
+            board.getBoard()[0][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][2].getValue() !== ''
             ||
-            board.getBoard()[0][2].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][0].getValue()     
+            board.getBoard()[0][2].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][0].getValue() !== ''    
         ){
-            status = 'win'
+            return 'win'
         }else{
-            status = 'unknown'
+            return 'unknown'
         }
-
-        return status
     }
 
     //Function to play a round
@@ -138,11 +135,12 @@ function GameController(
 
         //check winning
         const status = checkWinning()
+        console.log(status)
         if(status === 'win'){
             console.log(`${getActivePlayer.name} won the game!`)
         }else{
             //get empty cells to check tie
-            const emptyCells = board.getBoard().filter((row) => row.map((cell) => cell.getValue() = '')) 
+            const emptyCells = board.getBoard().map((row) => row.map((cell) => cell.getValue() === '')) 
             if(emptyCells.length === 0){
                 console.log('Its a tie!')
                 return
