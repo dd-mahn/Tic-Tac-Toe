@@ -19,7 +19,7 @@ function gameBoard(){
     //Function to fill cells
     const fillCell = (row,column,playerToken) => {
         //Check if targeted cell is available
-        if(board[row][column].getValue() !== ''){
+        if(board[row][column].getValue()){
             console.log('Cannot fill here!')
             return
         }else{
@@ -40,6 +40,7 @@ function gameBoard(){
     }
 }
 
+
 //Define cell to store value of the game
 function Cell(){
     let value = ''
@@ -56,13 +57,13 @@ function Cell(){
     }
 }
 
+
 //GameController 
 function GameController(
     playerOneName = 'Player1',
     playerTwoName = 'Player2'
 ){
-    const board = gameBoard()
-    //Player storage
+    const game_board = gameBoard()
     const players = [
         {
             name: playerOneName,
@@ -75,8 +76,6 @@ function GameController(
             score: 0
         }
     ]
-
-    //Active player 
     let activePlayer = players[0]
 
     //Function to get active player
@@ -84,63 +83,63 @@ function GameController(
 
     //Function to switch turn
     const switchTurn = () =>{
-        activePlayer = activePlayer === players[0] ? players[1] : players[0]
+        activePlayer = ( activePlayer === players[0] ? players[1] : players[0])
     }
 
     //Function to print new round
     const printNewRound = () =>{
-        board.printBoard()
+        console.log(game_board.printBoard())
         console.log(`${getActivePlayer().name}'s turn`)
     }
 
     //Function to check winning or tie
     const checkWinning = () => {
-        // const winPattern = [
-        //     [[0,0],[0,1],[0,2]],
-        //     [[1,0],[1,1],[1,2]],
-        //     [[2,0],[2,1],[2,2]],
-        //     [[0,0],[1,0],[2,0]],
-        //     [[0,1],[1,1],[2,1]],
-        //     [[0,2],[1,2],[2,2]],
-        //     [[0,0],[1,1],[2,2]],
-        //     [[0,2],[1,1],[2,0]],
-        // ]
-        if(
-            board.getBoard()[0][0].getValue() === board.getBoard()[0][1].getValue() === board.getBoard()[0][2].getValue() !== ''
-            ||
-            board.getBoard()[1][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[1][2].getValue() !== ''
-            ||
-            board.getBoard()[2][0].getValue() === board.getBoard()[2][1].getValue() === board.getBoard()[2][2].getValue() !== ''
-            ||
-            board.getBoard()[0][0].getValue() === board.getBoard()[1][0].getValue() === board.getBoard()[2][0].getValue() !== ''
-            ||
-            board.getBoard()[0][1].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][1].getValue() !== ''
-            ||
-            board.getBoard()[0][2].getValue() === board.getBoard()[1][2].getValue() === board.getBoard()[2][2].getValue() !== ''
-            ||
-            board.getBoard()[0][0].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][2].getValue() !== ''
-            ||
-            board.getBoard()[0][2].getValue() === board.getBoard()[1][1].getValue() === board.getBoard()[2][0].getValue() !== ''    
-        ){
-            return 'win'
-        }else{
-            return 'unknown'
+        const board = game_board.printBoard()
+
+        const winPatterns = [
+            [[0,0],[0,1],[0,2]],
+            [[1,0],[1,1],[1,2]],
+            [[2,0],[2,1],[2,2]],
+            [[0,0],[1,0],[2,0]],
+            [[0,1],[1,1],[2,1]],
+            [[0,2],[1,2],[2,2]],
+            [[0,0],[1,1],[2,2]],
+            [[0,2],[1,1],[2,0]],
+        ]
+
+        const status = []
+
+        for(const pattern of winPatterns){
+            const [a, b, c] = pattern
+            if(
+                board[a[0]][a[1]] === getActivePlayer().playerToken 
+                &&
+                board[c[0]][c[1]] === getActivePlayer().playerToken  
+                &&
+                board[b[0]][b[1]] === getActivePlayer().playerToken  
+            ){
+                status.push('win')
+                break
+            }else{
+                status.push('unknown')
+            }
         }
+
+        return status
     }
 
     //Function to play a round
     const playRound = (row, col) => {
         console.log(`${getActivePlayer().name} is filling selected cell...`)
-        board.fillCell(row,col,getActivePlayer().playerToken)
+        game_board.fillCell(row,col,getActivePlayer().playerToken)
 
         //check winning
         const status = checkWinning()
-        console.log(status)
-        if(status === 'win'){
+        if(status[status.length-1] === 'win'){
             console.log(`${getActivePlayer.name} won the game!`)
         }else{
             //get empty cells to check tie
-            const emptyCells = board.getBoard().map((row) => row.map((cell) => cell.getValue() === '')) 
+            const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === '')) 
             if(emptyCells.length === 0){
                 console.log('Its a tie!')
                 return
