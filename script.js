@@ -136,17 +136,29 @@ function GameController(
         //check winning
         const status = checkWinning()
         if(status[status.length-1] === 'win'){
-            console.log(`${getActivePlayer.name} won the game!`)
+            console.log(`${getActivePlayer().name} won the game!`)
         }else{
             //get empty cells to check tie
-            const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === '')) 
-            if(emptyCells.length === 0){
-                console.log('Its a tie!')
+            const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === ''))
+
+            let count = 0
+            let max = 0
+            
+            for(let row of emptyCells){
+                for(let cell of row){
+                    max += 1
+                    if(cell === false){
+                        count += 1
+                    }
+                }
+            }
+            if(count === max){
+                console.log('Tie!')
                 return
             }else{
                 switchTurn()
                 printNewRound()
-            }           
+            }
         }
     }
 
@@ -159,3 +171,4 @@ function GameController(
 }
 
 const game = GameController()
+
