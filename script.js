@@ -1,11 +1,9 @@
-//GameBoard object
 
 function gameBoard(){
     const rows = 3
     const columns = 3
     const board = []
 
-    //Create 2d array that store cells 
     for(var i = 0; i< rows; i++){
         board[i] = []
         for(var j = 0; j < columns; j++){
@@ -13,12 +11,9 @@ function gameBoard(){
         }
     }
 
-    //Function to get the board, for UI rendering
     const getBoard = () => board
 
-    //Function to fill cells
     const fillCell = (row,column,playerToken) => {
-        //Check if targeted cell is available
         if(board[row][column].getValue()){
             console.log('Cannot fill here!')
             return
@@ -27,7 +22,6 @@ function gameBoard(){
         }
     }
 
-    //Function to print the board
     const printBoard = () => {
         const filledBoard = board.map(row => row.map(cell => cell.getValue()))
         return filledBoard
@@ -40,8 +34,6 @@ function gameBoard(){
     }
 }
 
-
-//Define cell to store value of the game
 function Cell(){
     let value = ''
 
@@ -78,22 +70,19 @@ function GameController(
     ]
     let activePlayer = players[0]
 
-    //Function to get active player
     const getActivePlayer = () => activePlayer
 
-    //Function to switch turn
     const switchTurn = () =>{
         activePlayer = ( activePlayer === players[0] ? players[1] : players[0])
     }
 
-    //Function to print new round
     const printNewRound = () =>{
         console.log(game_board.printBoard())
         console.log(`${getActivePlayer().name}'s turn`)
     }
 
-    //Function to check winning or tie
     const checkWinning = () => {
+        const status = []
         const board = game_board.printBoard()
 
         const winPatterns = [
@@ -106,8 +95,6 @@ function GameController(
             [[0,0],[1,1],[2,2]],
             [[0,2],[1,1],[2,0]],
         ]
-
-        const status = []
 
         for(const pattern of winPatterns){
             const [a, b, c] = pattern
@@ -128,19 +115,15 @@ function GameController(
         return status
     }
 
-    //Function to play a round
     const playRound = (row, col) => {
         console.log(`${getActivePlayer().name} is filling selected cell...`)
         game_board.fillCell(row,col,getActivePlayer().playerToken)
 
-        //check winning
         const status = checkWinning()
         if(status[status.length-1] === 'win'){
             console.log(`${getActivePlayer().name} won the game!`)
         }else{
-            //get empty cells to check tie
             const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === ''))
-
             let count = 0
             let max = 0
             
