@@ -1,4 +1,4 @@
-
+//GameBoard
 function gameBoard(){
     const rows = 3
     const columns = 3
@@ -34,6 +34,7 @@ function gameBoard(){
     }
 }
 
+//Cell
 function Cell(){
     let value = ''
 
@@ -77,14 +78,13 @@ function GameController(
     }
 
     const printNewRound = () =>{
-        console.log(game_board.printBoard())
-        console.log(`${getActivePlayer().name}'s turn`)
+        game_board.getBoard()
+        console.log(`${getActivePlayer().name}'s turn...`)
     }
 
     const checkWinning = () => {
         const status = []
         const board = game_board.printBoard()
-
         const winPatterns = [
             [[0,0],[0,1],[0,2]],
             [[1,0],[1,1],[1,2]],
@@ -116,12 +116,11 @@ function GameController(
     }
 
     const playRound = (row, col) => {
-        console.log(`${getActivePlayer().name} is filling selected cell...`)
         game_board.fillCell(row,col,getActivePlayer().playerToken)
 
         const status = checkWinning()
         if(status[status.length-1] === 'win'){
-            console.log(`${getActivePlayer().name} won the game!`)
+            return `${getActivePlayer().name} won the game!`
         }else{
             const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === ''))
             let count = 0
@@ -136,8 +135,7 @@ function GameController(
                 }
             }
             if(count === max){
-                console.log('Tie!')
-                return
+                return 'Tie!'
             }else{
                 switchTurn()
                 printNewRound()
@@ -148,10 +146,47 @@ function GameController(
     printNewRound()
     
     return{
+        getBoard: game_board.getBoard,
         playRound,
         getActivePlayer
     }
 }
 
-const game = GameController()
+function ScreenController(){
+    const game = GameController()
+    const turnDiv = document.querySelector('.turn')
+    const boardDiv = document.querySelector('.board')
+    
+    const updateScreen = () => {
+        const activePlayer = game.getActivePlayer()
+        const board = game.getBoard()
 
+        boardDiv.textContent = ''
+        turnDiv.textContent = `${activePlayer.name}'s turn`
+
+        board.forEach((row,rowIndex) => {
+            row.forEach((cell,index) => {
+                const cellBtn = document.createElement('button')
+                cellBtn.classList.add('cell')
+                cellBtn.dataset.column = index
+                cellBtn.dataset.row = rowIndex
+                cellBtn.textContent = cell.getValue()
+                boardDiv.appendChild(cellBtn)
+            })
+        })
+    }
+
+    function clickHandlerBoard(e){
+        const targetColumn = e.target.dataset.column
+        const targetRow = e.target.dataset.row
+
+        if(!targetColumn || !targetRow)return
+        game.playRound(targetRow, targetColumn)
+        updateScreen()
+    }
+
+    boardDiv.addEventListener('click', clickHandlerBoard)
+    updateScreen()
+}
+
+ScreenController()
