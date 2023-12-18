@@ -112,16 +112,9 @@ function GameController(
             }
         }
 
-        return status
-    }
-
-    const playRound = (row, col) => {
-        game_board.fillCell(row,col,getActivePlayer().playerToken)
-
-        const status = checkWinning()
         if(status[status.length-1] === 'win'){
-            return `${getActivePlayer().name} won the game!`
-        }else{
+            return 'win'
+        }else if(status[status.length-1] !== 'win'){
             const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === ''))
             let count = 0
             let max = 0
@@ -135,12 +128,23 @@ function GameController(
                 }
             }
             if(count === max){
-                return 'Tie!'
-            }else{
-                switchTurn()
-                printNewRound()
+                return 'tie'
             }
         }
+        else{
+            return 'unknown'
+        }
+    }
+
+    const playRound = (row, col) => {
+        game_board.fillCell(row,col,getActivePlayer().playerToken) 
+
+        const status = checkWinning()
+
+        if(status !== 'win' && status !== 'tie'){
+            switchTurn()
+            printNewRound()
+        }   
     }
 
     printNewRound()
@@ -148,6 +152,7 @@ function GameController(
     return{
         getBoard: game_board.getBoard,
         playRound,
+        checkWinning,
         getActivePlayer
     }
 }
@@ -156,13 +161,24 @@ function ScreenController(){
     const game = GameController()
     const turnDiv = document.querySelector('.turn')
     const boardDiv = document.querySelector('.board')
+
+    const getStatus = () => game.checkWinning()
     
     const updateScreen = () => {
         const activePlayer = game.getActivePlayer()
         const board = game.getBoard()
+        const status = getStatus()
 
         boardDiv.textContent = ''
-        turnDiv.textContent = `${activePlayer.name}'s turn`
+        
+        if(status !== 'win' && status !== 'tie'){
+            turnDiv.textContent = `${activePlayer.name}'s turn`
+            
+
+        }else{
+            turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
+            boardDiv.classList.add('d-off')
+        }
 
         board.forEach((row,rowIndex) => {
             row.forEach((cell,index) => {
@@ -174,15 +190,23 @@ function ScreenController(){
                 boardDiv.appendChild(cellBtn)
             })
         })
+
     }
 
     function clickHandlerBoard(e){
         const targetColumn = e.target.dataset.column
         const targetRow = e.target.dataset.row
+        const status = getStatus()
 
         if(!targetColumn || !targetRow)return
-        game.playRound(targetRow, targetColumn)
-        updateScreen()
+
+        if(status !== 'win' && status !== 'tie'){
+            game.playRound(targetRow, targetColumn)
+            updateScreen()
+        }else{
+            return
+        }
+        
     }
 
     boardDiv.addEventListener('click', clickHandlerBoard)
