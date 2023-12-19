@@ -15,10 +15,17 @@ function gameBoard(){
 
     const fillCell = (row,column,playerToken) => {
         if(board[row][column].getValue()){
-            console.log('Cannot fill here!')
-            return
+            return 'Cannot fill here!'
         }else{
             board[row][column].addValue(playerToken)
+        }
+    }
+
+    const resetBoard = () => {
+        for(var i = 0; i< rows; i++){
+            for(var j = 0; j < columns; j++){
+                board[i][j].resetValue()
+            }
         }
     }
 
@@ -27,9 +34,17 @@ function gameBoard(){
         return filledBoard
     }
 
+    function setDomBoard(){
+        const boardDiv = document.querySelector('.board')
+        boardDiv.style.gridTemplateRows = `repeat(${rows},1fr)`
+        boardDiv.style.gridTemplateColumns = `repeat(${columns},1fr)`
+    }
+
+    setDomBoard()
     return {
         getBoard,
         fillCell,
+        resetBoard,
         printBoard
     }
 }
@@ -44,8 +59,11 @@ function Cell(){
 
     const getValue = () => value
 
+    const resetValue = () => value = ''
+
     return{
         addValue,
+        resetValue,
         getValue
     }
 }
@@ -151,6 +169,7 @@ function GameController(
     
     return{
         getBoard: game_board.getBoard,
+        resetBoard: game_board.resetBoard,
         playRound,
         checkWinning,
         getActivePlayer
@@ -161,6 +180,7 @@ function ScreenController(){
     const game = GameController()
     const turnDiv = document.querySelector('.turn')
     const boardDiv = document.querySelector('.board')
+    const restartBtn = document.querySelector('.restart__btn')
 
     const getStatus = () => game.checkWinning()
     
@@ -173,11 +193,13 @@ function ScreenController(){
         
         if(status !== 'win' && status !== 'tie'){
             turnDiv.textContent = `${activePlayer.name}'s turn`
-            
+            boardDiv.classList.remove('d-off')
+            restartBtn.classList.remove('d-on')
 
         }else{
             turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
             boardDiv.classList.add('d-off')
+            restartBtn.classList.add('d-on')
         }
 
         board.forEach((row,rowIndex) => {
@@ -206,9 +228,14 @@ function ScreenController(){
         }else{
             return
         }
-        
     }
 
+    function restart(){
+        game.resetBoard()
+        updateScreen()
+    }
+
+    restartBtn.addEventListener('click', restart)
     boardDiv.addEventListener('click', clickHandlerBoard)
     updateScreen()
 }
