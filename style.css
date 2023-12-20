@@ -1,19 +1,44 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+
+:root{
+    --border-color: #7D0A0A;
+    --text-color: #BF3131;
+    --board-color: #EAD196;
+    --bg-color: #F3EDC8;
+}
+
 body{
     display: flex;
     justify-content: center;
     align-items: center;
+    background: var(--bg-color);
+    background-image:
+    radial-gradient(circle at 100% 150%, var(--board-color) 24%, var(--bg-color) 24%, var(--bg-color) 28%, var(--board-color) 28%, var(--board-color) 36%, var(--bg-color) 36%, var(--bg-color) 40%, transparent 40%, transparent),
+    radial-gradient(circle at 0    150%, var(--board-color) 24%, var(--bg-color) 24%, var(--bg-color) 28%, var(--board-color) 28%, var(--board-color) 36%, var(--bg-color) 36%, var(--bg-color) 40%, transparent 40%, transparent),
+    radial-gradient(circle at 50%  100%, var(--bg-color) 10%, var(--board-color) 10%, var(--board-color) 23%, var(--bg-color) 23%, var(--bg-color) 30%, var(--board-color) 30%, var(--board-color) 43%, var(--bg-color) 43%, var(--bg-color) 50%, var(--board-color) 50%, var(--board-color) 63%, var(--bg-color) 63%, var(--bg-color) 71%, transparent 71%, transparent),
+    radial-gradient(circle at 100% 50%, var(--bg-color) 5%, var(--board-color) 5%, var(--board-color) 15%, var(--bg-color) 15%, var(--bg-color) 20%, var(--board-color) 20%, var(--board-color) 29%, var(--bg-color) 29%, var(--bg-color) 34%, var(--board-color) 34%, var(--board-color) 44%, var(--bg-color) 44%, var(--bg-color) 49%, transparent 49%, transparent),
+    radial-gradient(circle at 0    50%, var(--bg-color) 5%, var(--board-color) 5%, var(--board-color) 15%, var(--bg-color) 15%, var(--bg-color) 20%, var(--board-color) 20%, var(--board-color) 29%, var(--bg-color) 29%, var(--bg-color) 34%, var(--board-color) 34%, var(--board-color) 44%, var(--bg-color) 44%, var(--bg-color) 49%, transparent 49%, transparent);
+    background-size: 100px 50px;
+    color: var(--text-color);
+    font-family: 'Silkscreen', sans-serif;
+}
+.title{
+    font-size: 2.5rem;
+}
+.title,
+.turn{
+    text-align: center;
 }
 .board{
     width: 500px;
     height: 500px;
     display: grid;
-    grid-template-rows: repeat(3,1fr);
-    grid-template-columns: repeat(3,1fr);
-    border: 1px solid #333;
     border-radius:10px;
-    gap:2px;
-    background-color: aliceblue;
-    padding: 8px;
+    gap:8px;
+    background: var(--board-color);
+    padding: 16px;
+    box-shadow: -15px 20px 15px #33333352;
 }
 .cell{
     display: flex;
@@ -21,7 +46,26 @@ body{
     align-items: center;
     text-align: center;
     font-size: 20px;
-    border:1px solid #333;
-    background-color: aliceblue;
+    border:none;
+    border-radius: 10px;
+    background-color: var(--border-color);
+    color: var(--bg-color);
+    font-family: 'Silkscreen', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
     cursor: pointer;
+}
+
+.d-off{
+    opacity:0.5;
+    cursor:default;
+}
+
+.d-on{
+    display:block !important;
+}
+
+.restart__btn{
+    display: none;
+
 }
