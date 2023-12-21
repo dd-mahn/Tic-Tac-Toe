@@ -12,34 +12,45 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--bg-color);
-    background-image:
-    radial-gradient(circle at 100% 150%, var(--board-color) 24%, var(--bg-color) 24%, var(--bg-color) 28%, var(--board-color) 28%, var(--board-color) 36%, var(--bg-color) 36%, var(--bg-color) 40%, transparent 40%, transparent),
-    radial-gradient(circle at 0    150%, var(--board-color) 24%, var(--bg-color) 24%, var(--bg-color) 28%, var(--board-color) 28%, var(--board-color) 36%, var(--bg-color) 36%, var(--bg-color) 40%, transparent 40%, transparent),
-    radial-gradient(circle at 50%  100%, var(--bg-color) 10%, var(--board-color) 10%, var(--board-color) 23%, var(--bg-color) 23%, var(--bg-color) 30%, var(--board-color) 30%, var(--board-color) 43%, var(--bg-color) 43%, var(--bg-color) 50%, var(--board-color) 50%, var(--board-color) 63%, var(--bg-color) 63%, var(--bg-color) 71%, transparent 71%, transparent),
-    radial-gradient(circle at 100% 50%, var(--bg-color) 5%, var(--board-color) 5%, var(--board-color) 15%, var(--bg-color) 15%, var(--bg-color) 20%, var(--board-color) 20%, var(--board-color) 29%, var(--bg-color) 29%, var(--bg-color) 34%, var(--board-color) 34%, var(--board-color) 44%, var(--bg-color) 44%, var(--bg-color) 49%, transparent 49%, transparent),
-    radial-gradient(circle at 0    50%, var(--bg-color) 5%, var(--board-color) 5%, var(--board-color) 15%, var(--bg-color) 15%, var(--bg-color) 20%, var(--board-color) 20%, var(--board-color) 29%, var(--bg-color) 29%, var(--bg-color) 34%, var(--board-color) 34%, var(--board-color) 44%, var(--bg-color) 44%, var(--bg-color) 49%, transparent 49%, transparent);
-    background-size: 100px 50px;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%,#090a0f 100%);
     color: var(--text-color);
     font-family: 'Silkscreen', sans-serif;
+    padding: 1rem;
 }
+
 .title{
     font-size: 2.5rem;
+    margin-bottom: 1rem !important;
 }
+
 .title,
 .turn{
     text-align: center;
 }
+
+.turn{
+    display:none;
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .board{
     width: 500px;
     height: 500px;
-    display: grid;
-    border-radius:10px;
+    display: none;
+    border-radius:5px;
     gap:8px;
     background: var(--board-color);
     padding: 16px;
     box-shadow: -15px 20px 15px #33333352;
+    margin-bottom: 2rem;
 }
+
 .cell{
     display: flex;
     justify-content: center;
@@ -47,13 +58,18 @@ body{
     text-align: center;
     font-size: 20px;
     border:none;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: var(--border-color);
     color: var(--bg-color);
     font-family: 'Silkscreen', sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+.cell:hover{
+    background: var(--text-color);
+    transition: .3s;
 }
 
 .d-off{
@@ -67,5 +83,74 @@ body{
 
 .restart__btn{
     display: none;
+    padding: .5rem 1rem;
+    border:none;
+    border-radius: 5px;
+    background: var(--border-color);
+    color: var(--bg-color);
+    font-family: 'Silkscreen', sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.mode__form button:hover,
+.restart__btn:hover{
+    opacity: 0.8 !important;
+    transition: .2s;
+}
+
+.mode__form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.mode__form form{
+    margin-bottom: 2rem;
+}
+
+.mode__form h3{
 
 }
+
+.mode__player input,
+.mode__bot input{
+    padding: .3rem 1rem;
+    border:none;
+    border-radius:5px;
+    font-family: 'Silkscreen', sans-serif;
+    background-color: var(--bg-color);
+    color:var(--text-color);
+    margin:.5rem 0 1rem 0;
+}
+
+.mode__player input:focus,
+.mode__bot input:focus{
+    outline: none;
+    border: none;
+}
+
+.mode__player{
+    display: flex;
+    flex-direction: column;
+}
+
+.mode__bot{
+    display: none;
+}
+
+.mode__form button{
+    padding: .5rem 1rem;
+    border:none;
+    border-radius: 5px;
+    background: var(--border-color);
+    color: var(--bg-color);
+    font-family: 'Silkscreen', sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+
+
