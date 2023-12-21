@@ -14,11 +14,7 @@ function gameBoard(){
     const getBoard = () => board
 
     const fillCell = (row,column,playerToken) => {
-        if(board[row][column].getValue()){
-            return 'Cannot fill here!'
-        }else{
-            board[row][column].addValue(playerToken)
-        }
+        board[row][column].addValue(playerToken)
     }
 
     const resetBoard = () => {
@@ -38,6 +34,11 @@ function gameBoard(){
         const boardDiv = document.querySelector('.board')
         boardDiv.style.gridTemplateRows = `repeat(${rows},1fr)`
         boardDiv.style.gridTemplateColumns = `repeat(${columns},1fr)`
+    }
+
+    function generatePattern(){
+        const winPattern = []
+
     }
 
     setDomBoard()
@@ -67,7 +68,6 @@ function Cell(){
         getValue
     }
 }
-
 
 //GameController 
 function GameController(
@@ -103,6 +103,7 @@ function GameController(
     const checkWinning = () => {
         const status = []
         const board = game_board.printBoard()
+
         const winPatterns = [
             [[0,0],[0,1],[0,2]],
             [[1,0],[1,1],[1,2]],
@@ -155,14 +156,18 @@ function GameController(
     }
 
     const playRound = (row, col) => {
-        game_board.fillCell(row,col,getActivePlayer().playerToken) 
+        if(game_board.getBoard()[row][col].getValue()){
+            return
+        }else{
+            game_board.fillCell(row,col,getActivePlayer().playerToken) 
 
-        const status = checkWinning()
+            const status = checkWinning()
 
-        if(status !== 'win' && status !== 'tie'){
-            switchTurn()
-            printNewRound()
-        }   
+            if(status !== 'win' && status !== 'tie'){
+                switchTurn()
+                printNewRound()
+            }  
+        }
     }
 
     printNewRound()
@@ -181,6 +186,9 @@ function ScreenController(){
     const turnDiv = document.querySelector('.turn')
     const boardDiv = document.querySelector('.board')
     const restartBtn = document.querySelector('.restart__btn')
+    const playerForm = document.querySelector('.mode__player')
+    const botForm = document.querySelector('.mode__bot')
+
 
     const getStatus = () => game.checkWinning()
     
@@ -193,11 +201,13 @@ function ScreenController(){
         
         if(status !== 'win' && status !== 'tie'){
             turnDiv.textContent = `${activePlayer.name}'s turn`
+            turnDiv.style.color = 'var(--text-color)'
             boardDiv.classList.remove('d-off')
             restartBtn.classList.remove('d-on')
 
         }else{
             turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
+            turnDiv.style.color = 'green'
             boardDiv.classList.add('d-off')
             restartBtn.classList.add('d-on')
         }
