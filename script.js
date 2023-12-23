@@ -89,6 +89,11 @@ function GameController(
     ]
     let activePlayer = players[0]
 
+    const changePlayerName = (player1, player2) => {
+        players[0].name = player1
+        players[1].name = player2
+    }
+ 
     const getActivePlayer = () => activePlayer
 
     const switchTurn = () =>{
@@ -169,12 +174,11 @@ function GameController(
             }  
         }
     }
-
-    printNewRound()
     
     return{
         getBoard: game_board.getBoard,
         resetBoard: game_board.resetBoard,
+        changePlayerName,
         playRound,
         checkWinning,
         getActivePlayer
@@ -186,43 +190,95 @@ function ScreenController(){
     const turnDiv = document.querySelector('.turn')
     const boardDiv = document.querySelector('.board')
     const restartBtn = document.querySelector('.restart__btn')
+    const startBtn = document.querySelector('.start__btn')
+    const mode__form = document.querySelector('.mode__form')
     const playerForm = document.querySelector('.mode__player')
     const botForm = document.querySelector('.mode__bot')
-
+    const playerRadio = document.querySelectorAll('.mode__input')  
 
     const getStatus = () => game.checkWinning()
+
+    let gameStarted = false
     
     const updateScreen = () => {
-        const activePlayer = game.getActivePlayer()
-        const board = game.getBoard()
-        const status = getStatus()
+        if(!gameStarted){
+            mode__form.style.display = 'flex'
+            turnDiv.style.display = 'none'
+            boardDiv.style.display = 'none'
 
-        boardDiv.textContent = ''
-        
-        if(status !== 'win' && status !== 'tie'){
-            turnDiv.textContent = `${activePlayer.name}'s turn`
-            turnDiv.style.color = 'var(--text-color)'
-            boardDiv.classList.remove('d-off')
-            restartBtn.classList.remove('d-on')
-
+            if(checkMode() === 'player'){
+                playerForm.style.display = 'flex'
+                botForm.style.display = 'none'
+            }else{
+                playerForm.style.display = 'none'
+                botForm.style.display = 'block'
+            }
         }else{
-            turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
-            turnDiv.style.color = 'green'
-            boardDiv.classList.add('d-off')
-            restartBtn.classList.add('d-on')
-        }
+            const activePlayer = game.getActivePlayer()
+            const board = game.getBoard()
+            const status = getStatus()
+            boardDiv.textContent = ''
+            
+            mode__form.style.display = 'none'
+            turnDiv.style.display = 'block'
+            boardDiv.style.display = 'grid'
 
-        board.forEach((row,rowIndex) => {
-            row.forEach((cell,index) => {
-                const cellBtn = document.createElement('button')
-                cellBtn.classList.add('cell')
-                cellBtn.dataset.column = index
-                cellBtn.dataset.row = rowIndex
-                cellBtn.textContent = cell.getValue()
-                boardDiv.appendChild(cellBtn)
-            })
+            board.forEach((row,rowIndex) => {
+                row.forEach((cell,index) => {
+                    const cellBtn = document.createElement('button')
+                    cellBtn.classList.add('cell')
+                    cellBtn.dataset.column = index
+                    cellBtn.dataset.row = rowIndex
+                    cellBtn.textContent = cell.getValue()
+                    boardDiv.appendChild(cellBtn)
+                })
+            })    
+
+            if(status !== 'win' && status !== 'tie'){
+                turnDiv.textContent = `${activePlayer.name}'s turn`
+                turnDiv.style.color = 'var(--text-color)'
+                boardDiv.classList.remove('d-off')
+                restartBtn.classList.remove('d-on')
+    
+            }else{
+                turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
+                turnDiv.style.color = 'green'
+                boardDiv.classList.add('d-off')
+                restartBtn.classList.add('d-on')
+            }
+        }
+    }
+
+    const checkMode = () => {
+        let currentMode = ''
+        playerRadio.forEach(radio => {
+            if(radio.checked){
+                currentMode = radio.value
+            }else{
+                radio.addEventListener('click', () => {
+                    console.log(currentMode)
+                    currentMode = radio.value
+                    updateScreen()
+                })
+            }
         })
 
+        return currentMode
+    }
+
+    const startGame = () => {
+        gameStarted = true
+        const currentMode = checkMode()
+        if(currentMode === 'player'){
+            const player1Input = playerForm.querySelector('#player1')
+            const player2Input = playerForm.querySelector('#player2')
+            game.changePlayerName(player1Input.value, player2Input.value)
+            updateScreen()
+        }else if(currentMode === 'bot'){
+            const playerInput = botForm.querySelector('#player')
+            game.changePlayerName(playerInput.value, '3Tbot')
+            updateScreen()
+        }
     }
 
     function clickHandlerBoard(e){
@@ -245,6 +301,7 @@ function ScreenController(){
         updateScreen()
     }
 
+    startBtn.addEventListener('click', startGame)
     restartBtn.addEventListener('click', restart)
     boardDiv.addEventListener('click', clickHandlerBoard)
     updateScreen()
