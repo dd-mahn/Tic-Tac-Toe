@@ -38,13 +38,43 @@ function gameBoard(){
 
     function generatePattern(){
         const winPattern = []
+        let pattern = []
+        
+        function addHorizontal(){
+            for(let i = 0; i<rows; i++){
+                for(let j = 0; j < columns; j++){
+                    pattern.push([i,j])
+                }
+                winPattern.push(pattern)
+                pattern = []
+            }
+        }
 
+        function addVertical(){
+            for(let i = 0; i<columns; i++){
+                for(let j = 0; j < rows; j++){
+                    pattern.push([j,i])
+                }
+                winPattern.push(pattern)
+                pattern = []
+            }
+        }
+
+        function addDiagonal(){
+        }
+        
+        addHorizontal()
+        addVertical()
+        addDiagonal()
+
+        return winPattern
     }
 
     setDomBoard()
     return {
         getBoard,
         fillCell,
+        generatePattern,
         resetBoard,
         printBoard
     }
@@ -109,16 +139,8 @@ function GameController(
         const status = []
         const board = game_board.printBoard()
 
-        const winPatterns = [
-            [[0,0],[0,1],[0,2]],
-            [[1,0],[1,1],[1,2]],
-            [[2,0],[2,1],[2,2]],
-            [[0,0],[1,0],[2,0]],
-            [[0,1],[1,1],[2,1]],
-            [[0,2],[1,2],[2,2]],
-            [[0,0],[1,1],[2,2]],
-            [[0,2],[1,1],[2,0]],
-        ]
+        const winPatterns = game_board.generatePattern()
+        console.log(winPatterns)
 
         for(const pattern of winPatterns){
             const [a, b, c] = pattern
@@ -308,3 +330,11 @@ function ScreenController(){
 }
 
 ScreenController()
+
+/* todo : 
+- Auto generate pattern
+- Exit 
+- Bot autoplay
+- Style radio
+- Better style
+- Clean code */
