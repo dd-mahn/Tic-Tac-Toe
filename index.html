@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./star.css">
 </head>
 <body>
     <div class="container">
@@ -13,18 +12,19 @@
         <h3 class="turn"></h3>
         <div class="mode__form">
             <h3 class="mode__title">Choose mode</h3>
+
             <form class="mode__pick">
-                <input type="radio" name="mode" value = "player" checked>
+                <input type="radio" name="mode" class="mode__input" value = "player" checked>
                 <label for="player">Player vs Player</label>
-                <input type="radio" name="mode" value = "bot">
+                <input type="radio" name="mode" class="mode__input" value = "bot">
                 <label for="bot">Player vs Bot</label>
             </form>
 
             <form class="mode__player">
                 <label for="player1"> Player 1:</label>
-                <input type="text" placeholder="Player1" id="player1">
+                <input type="text" placeholder="Player1" id="player1" required>
                 <label for="player2"> Player 2:</label>
-                <input type="text" placeholder="Player2" id="player2">
+                <input type="text" placeholder="Player2" id="player2" required>
             </form>
 
             <form class="mode__bot">
@@ -32,7 +32,7 @@
                 <input type="text" placeholder="Player" id="player">
             </form>
 
-            <button>Start</button>
+            <button class="start__btn">Start</button>
             
         </div>
         <div class="board"></div>
