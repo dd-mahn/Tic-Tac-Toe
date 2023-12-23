@@ -228,6 +228,10 @@ function ScreenController(){
     
     const updateScreen = () => {
         if(!gameStarted){
+            exitBtn.style.display = 'none'
+            restartBtn.style.display = 'none'
+            startBtn.style.display = 'block'
+
             player1Input.value = ''
             player2Input.value = ''
             playerInput.value = ''
@@ -336,6 +340,7 @@ function ScreenController(){
 
     function exit(){
         gameStarted = false
+        game.resetBoard()
         updateScreen()
     }
 
