@@ -38,14 +38,10 @@ function gameBoard(){
 
     function generatePattern(){
         const winPattern = []
-        //rows
         for(let i = 0; i< rows; i++)winPattern.push(Array.from({length: columns}, (_,j) => ([i,j])))
-        //columns
         for(let i = 0; i< columns; i++)winPattern.push(Array.from({length: rows}, (_,j) => ([j,i])))
         if(rows === columns){
-            //diagonal left to right
             winPattern.push(Array.from({length:rows}, (_,i) => ([i,i])))
-            //diagonal right to left
             winPattern.push(Array.from({length:rows}, (_,i) => ([i,columns - 1 - i])))
         }
         return winPattern
@@ -65,7 +61,6 @@ function gameBoard(){
         printBoard
     }
 }
-
 //Cell
 function Cell(){
     let value = ''
@@ -84,7 +79,6 @@ function Cell(){
         getValue
     }
 }
-
 //GameController 
 function GameController(
     playerOneName = 'Player1',
@@ -154,7 +148,7 @@ function GameController(
             for(let row of emptyCells){
                 for(let cell of row){
                     max += 1
-                    if(cell === false){
+                    if(!cell){
                         count += 1
                     }
                 }
@@ -184,17 +178,32 @@ function GameController(
     }
 
     const botPlayRound = () => {
-        let botIndex = game_board.getRandomIndex()
-        while(game_board.getBoard()[botIndex[0]][botIndex[1]].getValue()){
-            botIndex = game_board.getRandomIndex()
+        const winPattern = game_board.generatePattern()
+        //check opponent opportunity
+        function checkOpponent(){
+            for(const pattern of winPattern){
+                let threatCells = pattern.map(([row,col]) => game_board.getBoard[row][col].getValue() === 'x')
+                if(threatCells.length === 2){
+                    const [row,col] = pattern.map(([row,col]) => game_board.getBoard[row][col].getValue() === '')
+                    return [row,col]
+                }else return 'unknown'
+            }
         }
-        game_board.fillCell(botIndex[0], botIndex[1], getActivePlayer().playerToken)
-        const status = checkWinning()
+        //check self opportunity
+        function checkSelf(){
+            for(const pattern of winPattern){
+                let winningCells = pattern.map(([row,col]) => game_board.getBoard()[row][col].getValue() === 'o')
+                if(winningCells.length === 2){
+                    const [row,col] = pattern.map(([row,col]) => game_board.getBoard()[row][col].getValue() === '')
+                    return [row,col]
+                } else return 'unknown'
+            }
+        }
+        // play smart with strategy
+        function playSmart(){
+            
+        }
 
-            if(status !== 'win' && status !== 'tie'){
-                switchTurn()
-                printNewRound()
-        }  
     }
     
     return{
