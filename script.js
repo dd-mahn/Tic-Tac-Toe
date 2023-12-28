@@ -38,42 +38,28 @@ function gameBoard(){
 
     function generatePattern(){
         const winPattern = []
-        let pattern = []
-        
-        function addHorizontal(){
-            for(let i = 0; i<rows; i++){
-                for(let j = 0; j < columns; j++){
-                    pattern.push([i,j])
-                }
-                winPattern.push(pattern)
-                pattern = []
-            }
+        //rows
+        for(let i = 0; i< rows; i++)winPattern.push(Array.from({length: columns}, (_,j) => ([i,j])))
+        //columns
+        for(let i = 0; i< columns; i++)winPattern.push(Array.from({length: rows}, (_,j) => ([j,i])))
+        if(rows === columns){
+            //diagonal left to right
+            winPattern.push(Array.from({length:rows}, (_,i) => ([i,i])))
+            //diagonal right to left
+            winPattern.push(Array.from({length:rows}, (_,i) => ([i,columns - 1 - i])))
         }
-
-        function addVertical(){
-            for(let i = 0; i<columns; i++){
-                for(let j = 0; j < rows; j++){
-                    pattern.push([j,i])
-                }
-                winPattern.push(pattern)
-                pattern = []
-            }
-        }
-
-        function addDiagonal(){
-        }
-        
-        addHorizontal()
-        addVertical()
-        addDiagonal()
-
         return winPattern
+    }
+
+    const getRandomIndex = () => {
+        return [Math.round(Math.random(0,rows)), Math.round(Math.random(0,columns))]
     }
 
     setDomBoard()
     return {
         getBoard,
         fillCell,
+        getRandomIndex,
         generatePattern,
         resetBoard,
         printBoard
@@ -194,7 +180,21 @@ function GameController(
                 switchTurn()
                 printNewRound()
             }  
+        } 
+    }
+
+    const botPlayRound = () => {
+        let botIndex = game_board.getRandomIndex()
+        while(game_board.getBoard()[botIndex[0]][botIndex[1]].getValue()){
+            botIndex = game_board.getRandomIndex()
         }
+        game_board.fillCell(botIndex[0], botIndex[1], getActivePlayer().playerToken)
+        const status = checkWinning()
+
+            if(status !== 'win' && status !== 'tie'){
+                switchTurn()
+                printNewRound()
+        }  
     }
     
     return{
@@ -202,6 +202,7 @@ function GameController(
         resetBoard: game_board.resetBoard,
         changePlayerName,
         playRound,
+        botPlayRound,
         checkWinning,
         getActivePlayer
     }
@@ -318,7 +319,7 @@ function ScreenController(){
                 return alert('Please fill all the fields')
             }
 
-            game.changePlayerName(playerInput.value, '3Tbot')
+            game.changePlayerName(playerInput.value, 'bot')
             updateScreen()
         }
     }
@@ -327,6 +328,7 @@ function ScreenController(){
         const targetColumn = e.target.dataset.column
         const targetRow = e.target.dataset.row
         const status = getStatus()
+        const currentMode = checkMode()
 
         if(!targetColumn || !targetRow)return
 
@@ -359,9 +361,6 @@ function ScreenController(){
 ScreenController()
 
 /* todo : 
-- Auto generate pattern
-- Exit 
 - Bot autoplay
 - Style radio
-- Better style
 - Clean code */
