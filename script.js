@@ -4,9 +4,9 @@ function gameBoard(){
     const columns = 3
     const board = []
 
-    for(var i = 0; i< rows; i++){
+    for(let i = 0; i< rows; i++){
         board[i] = []
-        for(var j = 0; j < columns; j++){
+        for(let j = 0; j < columns; j++){
             board[i].push(Cell())
         }
     }
@@ -179,6 +179,8 @@ function GameController(
 
     const botPlayRound = () => {
         const winPattern = game_board.generatePattern()
+        const rows = game_board.getBoard().length
+        const columns = game_board.getBoard()[0].length
         //check opponent opportunity
         function checkOpponent(){
             for(const pattern of winPattern){
@@ -186,7 +188,7 @@ function GameController(
                 if(threatCells.length === 2){
                     const [row,col] = pattern.map(([row,col]) => game_board.getBoard[row][col].getValue() === '')
                     return [row,col]
-                }else return 'unknown'
+                }else return null
             }
         }
         //check self opportunity
@@ -196,14 +198,54 @@ function GameController(
                 if(winningCells.length === 2){
                     const [row,col] = pattern.map(([row,col]) => game_board.getBoard()[row][col].getValue() === '')
                     return [row,col]
-                } else return 'unknown'
+                } else return null
             }
         }
         // play smart with strategy
         function playSmart(){
-            
+            const row = Math.floor(rows/2)
+            const col = Math.floor(columns/2)
+
+            if(game_board.getBoard()[row][col].getValue() !== ''){
+                return [row,col]
+            }else return null
+        }
+        //Play randomly
+        function playRandom(){
+            for(let i = 0; i < rows; i++){
+                for(let j = 0; j < columns; j++){
+                    if(!game_board.getBoard()[i][j].getValue())return [i,j]
+                }
+            }
+        }
+        //Finishing 
+        const opponentStatus = checkOpponent()
+        const selfStatus = checkSelf()
+        const smartFill = playSmart()
+        const randomFill = playRandom()
+
+        switch(opponentStatus){
+            case null:
+                if(selfStatus !== null){
+                    game_board.fillCell(selfStatus[0], selfStatus[1])
+                }else{
+                    if(smartFill !== null){
+                        game_board.fillCell(smartFill[0],smartFill[1])
+                    }else{
+                        game_board.fillCell(randomFill[0],randomFill[1])
+                    }
+                }
+                break
+            default: 
+                game_board.fillCell(opponentStatus[0], opponentStatus[1])
         }
 
+        const status = checkWinning()
+
+        if(status !== 'win' && status !== 'tie'){
+            switchTurn()
+            printNewRound()
+        }  
     }
     
     return{
