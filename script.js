@@ -190,7 +190,8 @@ function GameController(
         function checkOpponent(pattern){
             let cellsValue = pattern.map(([row,col]) => board[row][col].getValue())
             const opponentChance = cellsValue.filter(value => value === 'x')
-            if(opponentChance.length === 2){return findEmpty(pattern)}else{return null}
+            const myTokens = cellsValue.filter(value => value === 'o');
+            if(opponentChance.length === 2 && myTokens.length === 0){return findEmpty(pattern)}else{return null}
         }
         //check self opportunity
         function checkSelf(pattern){
@@ -242,8 +243,8 @@ function GameController(
         playRound()
         const status = checkWinning()
         if(status !== 'win' && status !== 'tie'){
-            switchTurn()
             printNewRound()
+            switchTurn()
         } 
     }
 
