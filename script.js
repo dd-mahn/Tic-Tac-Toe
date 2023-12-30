@@ -120,7 +120,6 @@ function GameController(
         const board = game_board.printBoard()
 
         const winPatterns = game_board.generatePattern()
-        console.log(winPatterns)
 
         for(const pattern of winPatterns){
             const [a, b, c] = pattern
@@ -181,73 +180,68 @@ function GameController(
         const winPattern = game_board.generatePattern()
         const rows = game_board.getBoard().length
         const columns = game_board.getBoard()[0].length
+        //find the empty cell we need
+        function findEmpty(pattern){
+            for(const [row,col] of pattern){
+                if(game_board.printBoard()[row][col] === '')return {row,col}            }
+        }
         //check opponent opportunity
-        function checkOpponent(){
-            for(const pattern of winPattern){
-                let threatCells = pattern.map(([row,col]) => game_board.getBoard[row][col].getValue() === 'x')
-                if(threatCells.length === 2){
-                    const [row,col] = pattern.map(([row,col]) => game_board.getBoard[row][col].getValue() === '')
-                    return [row,col]
-                }else return null
-            }
+        function checkOpponent(pattern){
+            let cellsValue = pattern.map(([row,col]) => game_board.printBoard()[row][col])
+            const opponentChance = cellsValue.filter(value => value === 'x')
+            if(opponentChance.length === 2){return findEmpty(pattern)}else{return null}
         }
         //check self opportunity
-        function checkSelf(){
-            for(const pattern of winPattern){
-                let winningCells = pattern.map(([row,col]) => game_board.getBoard()[row][col].getValue() === 'o')
-                if(winningCells.length === 2){
-                    const [row,col] = pattern.map(([row,col]) => game_board.getBoard()[row][col].getValue() === '')
-                    return [row,col]
-                } else return null
-            }
+        function checkSelf(pattern){
+            let cellsValue = pattern.map(([row,col]) => game_board.printBoard()[row][col])
+            const myChance = cellsValue.filter(value => value === 'o')
+            if(myChance.length === 2){return findEmpty(pattern)}else{return null}
         }
         // play smart with strategy
         function playSmart(){
             const row = Math.floor(rows/2)
             const col = Math.floor(columns/2)
 
-            if(game_board.getBoard()[row][col].getValue() !== ''){
-                return [row,col]
+            if(game_board.printBoard()[row][col] !== ''){
+                return {row,col}
             }else return null
         }
         //Play randomly
         function playRandom(){
-            for(let i = 0; i < rows; i++){
-                for(let j = 0; j < columns; j++){
-                    if(!game_board.getBoard()[i][j].getValue())return [i,j]
+            for(let row = 0; row < rows; row++){
+                for(let col = 0; col < columns; col++){
+                    if(game_board.printBoard()[row][col] === '')return {row,col}
                 }
             }
         }
         //Finishing 
-        const opponentStatus = checkOpponent()
-        const selfStatus = checkSelf()
-        const smartFill = playSmart()
-        const randomFill = playRandom()
+        function playRound(){
+            for(const pattern of winPattern){
+                const opponent = checkOpponent(pattern)
+                const self = checkSelf(pattern)
+                const smart = playSmart()
+                const random = playRandom()
 
-        switch(opponentStatus){
-            case null:
-                if(selfStatus !== null){
-                    game_board.fillCell(selfStatus[0], selfStatus[1])
+                if(self !== null){
+                    return game_board.fillCell(self.row,self.col,getActivePlayer().playerToken)
                 }else{
-                    if(smartFill !== null){
-                        game_board.fillCell(smartFill[0],smartFill[1])
+                    if(opponent !== null){
+                        return game_board.fillCell(opponent.row,opponent.col,getActivePlayer().playerToken)
                     }else{
-                        game_board.fillCell(randomFill[0],randomFill[1])
+                        return smart !== null ? game_board.fillCell(smart.row,smart.col,getActivePlayer().playerToken) : game_board.fillCell(random.row,random.col,getActivePlayer().playerToken)
                     }
                 }
-                break
-            default: 
-                game_board.fillCell(opponentStatus[0], opponentStatus[1])
+            }
         }
 
+        playRound()
         const status = checkWinning()
-
         if(status !== 'win' && status !== 'tie'){
             switchTurn()
             printNewRound()
-        }  
+        } 
     }
-    
+
     return{
         getBoard: game_board.getBoard,
         resetBoard: game_board.resetBoard,
@@ -258,7 +252,7 @@ function GameController(
         getActivePlayer
     }
 }
-
+//ScreenController
 function ScreenController(){
     const game = GameController()
     const turnDiv = document.querySelector('.turn')
@@ -345,7 +339,6 @@ function ScreenController(){
                 currentMode = radio.value
             }else{
                 radio.addEventListener('click', () => {
-                    console.log(currentMode)
                     currentMode = radio.value
                     updateScreen()
                 })
@@ -384,8 +377,14 @@ function ScreenController(){
         if(!targetColumn || !targetRow)return
 
         if(status !== 'win' && status !== 'tie'){
-            game.playRound(targetRow, targetColumn)
-            updateScreen()
+            if(currentMode === 'player'){
+                game.playRound(targetRow, targetColumn)
+                updateScreen()
+            }else if(currentMode === 'bot' && game.getActivePlayer().playerToken === 'x'){
+                game.playRound(targetRow, targetColumn)
+                game.botPlayRound()
+                updateScreen()
+            }
         }else{
             return
         }
@@ -412,6 +411,5 @@ function ScreenController(){
 ScreenController()
 
 /* todo : 
-- Bot autoplay
 - Style radio
 - Clean code */
