@@ -180,20 +180,21 @@ function GameController(
         const winPattern = game_board.generatePattern()
         const rows = game_board.getBoard().length
         const columns = game_board.getBoard()[0].length
+        const board = game_board.getBoard()
         //find the empty cell we need
         function findEmpty(pattern){
             for(const [row,col] of pattern){
-                if(game_board.printBoard()[row][col] === '')return {row,col}            }
+                if(board[row][col].getValue() === '')return {row,col}            }
         }
         //check opponent opportunity
         function checkOpponent(pattern){
-            let cellsValue = pattern.map(([row,col]) => game_board.printBoard()[row][col])
+            let cellsValue = pattern.map(([row,col]) => board[row][col].getValue())
             const opponentChance = cellsValue.filter(value => value === 'x')
             if(opponentChance.length === 2){return findEmpty(pattern)}else{return null}
         }
         //check self opportunity
         function checkSelf(pattern){
-            let cellsValue = pattern.map(([row,col]) => game_board.printBoard()[row][col])
+            let cellsValue = pattern.map(([row,col]) => board[row][col].getValue())
             const myChance = cellsValue.filter(value => value === 'o')
             if(myChance.length === 2){return findEmpty(pattern)}else{return null}
         }
@@ -202,7 +203,7 @@ function GameController(
             const row = Math.floor(rows/2)
             const col = Math.floor(columns/2)
 
-            if(game_board.printBoard()[row][col] !== ''){
+            if(board[row][col].getValue() === ''){
                 return {row,col}
             }else return null
         }
@@ -210,7 +211,7 @@ function GameController(
         function playRandom(){
             for(let row = 0; row < rows; row++){
                 for(let col = 0; col < columns; col++){
-                    if(game_board.printBoard()[row][col] === '')return {row,col}
+                    if(board[row][col].getValue() === '')return {row,col}
                 }
             }
         }
@@ -222,13 +223,17 @@ function GameController(
                 const smart = playSmart()
                 const random = playRandom()
 
-                if(self !== null){
+                if(self !== null && self !== undefined){
                     return game_board.fillCell(self.row,self.col,getActivePlayer().playerToken)
                 }else{
-                    if(opponent !== null){
+                    if(opponent !== null && opponent !== undefined){
                         return game_board.fillCell(opponent.row,opponent.col,getActivePlayer().playerToken)
                     }else{
-                        return smart !== null ? game_board.fillCell(smart.row,smart.col,getActivePlayer().playerToken) : game_board.fillCell(random.row,random.col,getActivePlayer().playerToken)
+                        if(smart !== null){
+                            return game_board.fillCell(smart.row,smart.col,getActivePlayer().playerToken)
+                        }else{
+                            if(random !== undefined) return game_board.fillCell(random.row,random.col,getActivePlayer().playerToken)
+                        }
                     }
                 }
             }
