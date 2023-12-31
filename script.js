@@ -393,9 +393,12 @@ function ScreenController(){
                 game.playRound(targetRow, targetColumn)
                 updateScreen()
             }else if(currentMode === 'bot' && game.getActivePlayer().playerToken === 'x'){
-                game.playRound(targetRow, targetColumn)
-                game.botPlayRound()
-                updateScreen()
+                if(game.getBoard()[targetRow][targetColumn].getValue() === ''){
+                    game.playRound(targetRow, targetColumn)
+                    game.botPlayRound()
+                    updateScreen()
+                }
+                else return
             }
         }else{
             return
