@@ -47,15 +47,10 @@ function gameBoard(){
         return winPattern
     }
 
-    const getRandomIndex = () => {
-        return [Math.round(Math.random(0,rows)), Math.round(Math.random(0,columns))]
-    }
-
     setDomBoard()
     return {
         getBoard,
         fillCell,
-        getRandomIndex,
         generatePattern,
         resetBoard,
         printBoard
@@ -85,6 +80,7 @@ function GameController(
     playerTwoName = 'Player2'
 ){
     const game_board = gameBoard()
+
     const players = [
         {
             name: playerOneName,
@@ -97,14 +93,17 @@ function GameController(
             score: 0
         }
     ]
-    let activePlayer = players[0]
 
     const changePlayerName = (player1, player2) => {
         players[0].name = player1
         players[1].name = player2
     }
+
+    let activePlayer = players[0]
  
     const getActivePlayer = () => activePlayer
+
+    const resetActivePlayer = () => activePlayer = players[0]
 
     const switchTurn = () =>{
         activePlayer = ( activePlayer === players[0] ? players[1] : players[0])
@@ -177,29 +176,29 @@ function GameController(
     }
 
     const botPlayRound = () => {
+
         const winPattern = game_board.generatePattern()
         const rows = game_board.getBoard().length
         const columns = game_board.getBoard()[0].length
         const board = game_board.getBoard()
-        //find the empty cell we need
+
         function findEmpty(pattern){
             for(const [row,col] of pattern){
                 if(board[row][col].getValue() === '')return {row,col}            }
         }
-        //check opponent opportunity
+        
         function checkOpponent(pattern){
             let cellsValue = pattern.map(([row,col]) => board[row][col].getValue())
             const opponentChance = cellsValue.filter(value => value === 'x')
-            const myTokens = cellsValue.filter(value => value === 'o');
-            if(opponentChance.length === 2 && myTokens.length === 0){return findEmpty(pattern)}else{return null}
+            if(opponentChance.length === 2 && cellsValue.includes('')){return findEmpty(pattern)}else return null
         }
-        //check self opportunity
+        
         function checkSelf(pattern){
             let cellsValue = pattern.map(([row,col]) => board[row][col].getValue())
             const myChance = cellsValue.filter(value => value === 'o')
-            if(myChance.length === 2){return findEmpty(pattern)}else{return null}
+            if(myChance.length === 2 && cellsValue.includes('')){return findEmpty(pattern)}else return null
         }
-        // play smart with strategy
+        
         function playSmart(){
             const row = Math.floor(rows/2)
             const col = Math.floor(columns/2)
@@ -208,7 +207,7 @@ function GameController(
                 return {row,col}
             }else return null
         }
-        //Play randomly
+        
         function playRandom(){
             for(let row = 0; row < rows; row++){
                 for(let col = 0; col < columns; col++){
@@ -216,28 +215,34 @@ function GameController(
                 }
             }
         }
-        //Finishing 
+        
         function playRound(){
+            let chosenMove = null
+
             for(const pattern of winPattern){
                 const opponent = checkOpponent(pattern)
                 const self = checkSelf(pattern)
                 const smart = playSmart()
                 const random = playRandom()
-
+            
                 if(self !== null && self !== undefined){
-                    return game_board.fillCell(self.row,self.col,getActivePlayer().playerToken)
+                    chosenMove = self
+                    break
                 }else{
                     if(opponent !== null && opponent !== undefined){
-                        return game_board.fillCell(opponent.row,opponent.col,getActivePlayer().playerToken)
+                        chosenMove = opponent
+                        break
                     }else{
                         if(smart !== null){
-                            return game_board.fillCell(smart.row,smart.col,getActivePlayer().playerToken)
+                            chosenMove = smart
                         }else{
-                            if(random !== undefined) return game_board.fillCell(random.row,random.col,getActivePlayer().playerToken)
+                            chosenMove = random
                         }
                     }
                 }
             }
+
+            if(chosenMove !== null && chosenMove !== undefined)return game_board.fillCell(chosenMove.row, chosenMove.col, getActivePlayer().playerToken)
         }
 
         playRound()
@@ -255,7 +260,8 @@ function GameController(
         playRound,
         botPlayRound,
         checkWinning,
-        getActivePlayer
+        getActivePlayer,
+        resetActivePlayer
     }
 }
 //ScreenController
@@ -404,6 +410,8 @@ function ScreenController(){
 
     function restart(){
         game.resetBoard()
+        game.resetActivePlayer()
+        gameStarted = true
         updateScreen()
     }
 
