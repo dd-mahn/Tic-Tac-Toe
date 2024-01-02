@@ -38,6 +38,7 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    height: 90vh;
 }
 
 .board{
@@ -108,7 +109,7 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 70vh;
+    height: 60vh;
 }
 
 .mode__form form{
@@ -116,7 +117,7 @@ body{
 }
 
 .mode__form h3{
-
+    margin-bottom: 2rem;
 }
 
 .mode__player input,
