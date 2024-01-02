@@ -286,14 +286,13 @@ function ScreenController(){
     
     const updateScreen = () => {
         if(!gameStarted){
-            exitBtn.style.display = 'none'
-            restartBtn.style.display = 'none'
-            startBtn.style.display = 'block'
-
             player1Input.value = ''
             player2Input.value = ''
             playerInput.value = ''
 
+            exitBtn.style.display = 'none'
+            restartBtn.style.display = 'none'
+            startBtn.style.display = 'block'
             mode__form.style.display = 'flex'
             turnDiv.style.display = 'none'
             boardDiv.style.display = 'none'
@@ -306,14 +305,14 @@ function ScreenController(){
                 botForm.style.display = 'block'
             }
         }else{
-            startBtn.style.display = 'none'
-            exitBtn.style.display = 'block'
-            
             const activePlayer = game.getActivePlayer()
             const board = game.getBoard()
             const status = getStatus()
+
             boardDiv.textContent = ''
             
+            startBtn.style.display = 'none'
+            exitBtn.style.display = 'block'
             mode__form.style.display = 'none'
             turnDiv.style.display = 'block'
             boardDiv.style.display = 'grid'
@@ -333,7 +332,6 @@ function ScreenController(){
                 turnDiv.textContent = `${activePlayer.name}'s turn`
                 turnDiv.style.color = 'var(--text-color)'
                 boardDiv.classList.remove('d-off')
-
 
             }else{
                 turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
@@ -361,13 +359,13 @@ function ScreenController(){
     }
 
     const startGame = () => {
-        gameStarted = true
         const currentMode = checkMode()
         if(currentMode === 'player'){
             if(!player1Input.value || !player2Input.value){
                 return alert('Please fill all the fields')
             }
-
+            
+            gameStarted = true
             game.changePlayerName(player1Input.value, player2Input.value)
             updateScreen()
         }else if(currentMode === 'bot'){
@@ -375,6 +373,7 @@ function ScreenController(){
                 return alert('Please fill all the fields')
             }
 
+            gameStarted = true
             game.changePlayerName(playerInput.value, 'bot')
             updateScreen()
         }
@@ -386,6 +385,11 @@ function ScreenController(){
         const status = getStatus()
         const currentMode = checkMode()
 
+        function botPLay(){
+            game.botPlayRound()
+            updateScreen()
+        }
+
         if(!targetColumn || !targetRow)return
 
         if(status !== 'win' && status !== 'tie'){
@@ -395,8 +399,9 @@ function ScreenController(){
             }else if(currentMode === 'bot' && game.getActivePlayer().playerToken === 'x'){
                 if(game.getBoard()[targetRow][targetColumn].getValue() === ''){
                     game.playRound(targetRow, targetColumn)
-                    game.botPlayRound()
                     updateScreen()
+
+                    const botPlay = setTimeout(botPLay, 1000)
                 }
                 else return
             }
