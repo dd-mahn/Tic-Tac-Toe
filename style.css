@@ -217,7 +217,9 @@ body{
     --color-1: var(--text-color);
     --color-2: var(--border-color);
     --color-3: var(--bg-color);
-    --color-4: var(--text-color)
+    --color-4: var(--text-color);
+
+    font-size: 1.4rem;
 }
 
 .mode__player input,
