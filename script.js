@@ -346,7 +346,7 @@ function ScreenController(){
             }else{
                 turnDiv.classList.add('result')
                 if(status === 'win'){
-                    turnDiv.textContent = `${activePlayer.name} wins!`
+                    turnDiv.textContent = `${activePlayer.name} won the game!`
                     turnDiv.style.color = 'var(--win-color)'
                     boardDiv.classList.add('d-off')
                     restartBtn.style.display = 'block'
@@ -449,7 +449,3 @@ function ScreenController(){
 }
 
 ScreenController()
-
-/* todo : 
-- Style radio
-- Clean code */
