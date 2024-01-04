@@ -334,10 +334,17 @@ function ScreenController(){
                 boardDiv.classList.remove('d-off')
 
             }else{
-                turnDiv.textContent = `${activePlayer.name}'s turn: ${status}`
-                turnDiv.style.color = 'green'
-                boardDiv.classList.add('d-off')
-                restartBtn.style.display = 'block'
+                if(status === 'win'){
+                    turnDiv.textContent = `${activePlayer.name} wins!`
+                    turnDiv.style.color = 'green'
+                    boardDiv.classList.add('d-off')
+                    restartBtn.style.display = 'block'
+                }else{
+                    turnDiv.textContent = `It's a tie!`
+                    turnDiv.style.color = 'var(--board-color)'
+                    boardDiv.classList.add('d-off')
+                    restartBtn.style.display = 'block'
+                }
             }
         }
     }
