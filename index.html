@@ -20,10 +20,14 @@
             <h3 class="mode__title">Choose mode</h3>
 
             <form class="mode__pick">
-                <input type="radio" name="mode" class="mode__input" value = "player" checked>
-                <label for="player">Player vs Player</label>
-                <input type="radio" name="mode" class="mode__input" value = "bot">
-                <label for="bot">Player vs Bot</label>
+                <div class="input__container">
+                    <input type="radio" name="mode" class="mode__input" value = "player" checked>
+                    <label for="player" class="mode__lbl-1">Player vs Player</label>
+                </div>
+                <div class="input__container">
+                    <input type="radio" name="mode" class="mode__input" value = "bot">
+                    <label for="bot" class="mode__lbl-2">Player vs Bot</label>
+                </div>
             </form>
 
             <form class="mode__player">
