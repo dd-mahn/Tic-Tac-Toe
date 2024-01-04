@@ -275,7 +275,9 @@ function ScreenController(){
     const mode__form = document.querySelector('.mode__form')
     const playerForm = document.querySelector('.mode__player')
     const botForm = document.querySelector('.mode__bot')
-    const playerRadio = document.querySelectorAll('.mode__input')  
+    const modeRadio = document.querySelectorAll('.mode__input') 
+    const playerLabel = document.querySelector('.mode__lbl-1')
+    const botLabel = document.querySelector('.mode__lbl-2')
     const player1Input = playerForm.querySelector('#player1')
     const player2Input = playerForm.querySelector('#player2')
     const playerInput = botForm.querySelector('#player')
@@ -297,12 +299,19 @@ function ScreenController(){
             turnDiv.style.display = 'none'
             boardDiv.style.display = 'none'
 
+
             if(checkMode() === 'player'){
                 playerForm.style.display = 'flex'
                 botForm.style.display = 'none'
+                playerLabel.classList.add('checked')
+                botLabel.classList.remove('checked')
+
             }else{
                 playerForm.style.display = 'none'
                 botForm.style.display = 'block'
+                botLabel.classList.add('checked')
+                playerLabel.classList.remove('checked')
+
             }
         }else{
             const activePlayer = game.getActivePlayer()
@@ -332,11 +341,13 @@ function ScreenController(){
                 turnDiv.textContent = `${activePlayer.name}'s turn`
                 turnDiv.style.color = 'var(--text-color)'
                 boardDiv.classList.remove('d-off')
+                turnDiv.classList.remove('result')
 
             }else{
+                turnDiv.classList.add('result')
                 if(status === 'win'){
                     turnDiv.textContent = `${activePlayer.name} wins!`
-                    turnDiv.style.color = 'green'
+                    turnDiv.style.color = 'var(--win-color)'
                     boardDiv.classList.add('d-off')
                     restartBtn.style.display = 'block'
                 }else{
@@ -351,7 +362,7 @@ function ScreenController(){
 
     const checkMode = () => {
         let currentMode = ''
-        playerRadio.forEach(radio => {
+        modeRadio.forEach(radio => {
             if(radio.checked){
                 currentMode = radio.value
             }else{
