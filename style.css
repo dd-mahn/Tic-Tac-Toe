@@ -111,8 +111,8 @@ body{
 
 /* GAME-BOARD SECTION */
 .board{
-    width: 500px;
-    height: 500px;
+    width: 400px;
+    height: 400px;
     display: none;
     border-radius:5px;
     gap:8px;
