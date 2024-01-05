@@ -17,6 +17,20 @@ function gameBoard(){
         board[row][column].addValue(playerToken)
     }
 
+    function checkEmpty(){
+        let emptyCount = 0;
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                if (board[i][j].getValue() === '') {
+                    emptyCount++;
+                }
+            }
+        }
+
+        return emptyCount;
+    }
+
     const resetBoard = () => {
         for(var i = 0; i< rows; i++){
             for(var j = 0; j < columns; j++){
@@ -53,6 +67,7 @@ function gameBoard(){
         fillCell,
         generatePattern,
         resetBoard,
+        checkEmpty,
         printBoard
     }
 }
@@ -139,21 +154,7 @@ function GameController(
         if(status[status.length-1] === 'win'){
             return 'win'
         }else if(status[status.length-1] !== 'win'){
-            const emptyCells = game_board.printBoard().map((row) => row.map((cell) => cell === ''))
-            let count = 0
-            let max = 0
-            
-            for(let row of emptyCells){
-                for(let cell of row){
-                    max += 1
-                    if(!cell){
-                        count += 1
-                    }
-                }
-            }
-            if(count === max){
-                return 'tie'
-            }
+            if(game_board.checkEmpty() === 0)return 'tie'
         }
         else{
             return 'unknown'
@@ -256,6 +257,7 @@ function GameController(
     return{
         getBoard: game_board.getBoard,
         resetBoard: game_board.resetBoard,
+        checkEmpty: game_board.checkEmpty,
         changePlayerName,
         playRound,
         botPlayRound,
@@ -419,7 +421,9 @@ function ScreenController(){
                     game.playRound(targetRow, targetColumn)
                     updateScreen()
 
-                    const botPlay = setTimeout(botPLay, 1000)
+                    if(game.checkEmpty() !== 0){
+                        const botPlay = setTimeout(botPLay, 1000)
+                    }
                 }
                 else return
             }
