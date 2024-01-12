@@ -420,8 +420,9 @@ function ScreenController(){
                 if(game.getBoard()[targetRow][targetColumn].getValue() === ''){
                     game.playRound(targetRow, targetColumn)
                     updateScreen()
+                    const newStatus = getStatus()
 
-                    if(game.checkEmpty() !== 0){
+                    if(game.checkEmpty() !== 0 && newStatus !== 'win'){
                         const botPlay = setTimeout(botPLay, 1000)
                     }
                 }
